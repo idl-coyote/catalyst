@@ -7,14 +7,14 @@
 ;
 ;       This is an image display routine to allow the user to interact with
 ;       an image. Moving the cursor in the window gives the value and location
-;       inside the image. The image is enclosed in a SCALEIMAGE object, so many of 
-;       the input keywords are used to set the scaling parameters for that object. 
-;       If axes are requested, an IMGAXIS object is added to the SCALEIMAGE object. 
+;       inside the image. The image is enclosed in a SCALEIMAGE object, so many of
+;       the input keywords are used to set the scaling parameters for that object.
+;       If axes are requested, an IMGAXIS object is added to the SCALEIMAGE object.
 ;       Other keywords are used to set up the axis object. The entire window can
 ;       be saved to file in various formats. The image can be scaled interactively,
 ;       image colors can be changed, and various image and axes properties can be
 ;       accessed directly from the File menu of the image window.
-;       
+;
 ; AUTHORS:
 ;
 ;        FANNING SOFTWARE CONSULTING   BURRIDGE COMPUTING
@@ -31,12 +31,12 @@
 ; SYNTAX:
 ;
 ;       ImgWin, image
-;       
+;
 ; ARGUMENTS:
-; 
+;
 ;     image    An 8-bit or 24-bit image array, or the name of an image file that
-;              can be opened with READ_IMAGE. 
-;       
+;              can be opened with READ_IMAGE.
+;
 ; INPUT_KEYWORDS:
 ;
 ;     AXES:        Set this keyword to draw a set of axes around the image.
@@ -46,36 +46,36 @@
 ;     BETA:        The beta factor in a Hyperpolic Sine stretch. Default is 3.0.
 ;
 ;     BOTTOM:      The lowest value of the scaled image.
-;     
+;
 ;     BREWER:      Set if the color table index number (CT) is the index of a Brewer color table.
 ;                  To use Brewer color tables, the file fsc_brewer.tbl must be in your IDL path.
-;                  
-;     COLOR:       Set this keyword to the name of the axis color. The name is passed to cgColor 
+;
+;     COLOR:       Set this keyword to the name of the axis color. The name is passed to cgColor
 ;                  for processing. Default is "charcoal". Used only if AXES is set.
 ;
-;     CTINDEX:     The index of the color table to use to display the image. Applies only to 
+;     CTINDEX:     The index of the color table to use to display the image. Applies only to
 ;                  2D image arrays. By default, 0, gray scale. If set to -1, uses current color table.
 ;
 ;     EXPONENT:    The logarithm exponent in a logarithmic stretch. Default is 4.0.
-;     
+;
 ;     FULL_RESOLUTION: Set this keyword if you want the image to be displayed in its full, native resolution.
 ;                   If this keyword is set, the XSIZE and YSIZE keywords set the scrollable window size.
 ;
 ;     GAMMA:       The gamma factor in a gamma stretch. Default is 1.5.
 ;
-;     KEEP_ASPECT:  Normally, the image will be resized to fit the specified position in the 
-;                   window. If you prefer, you can force the image to maintain its aspect ratio 
+;     KEEP_ASPECT:  Normally, the image will be resized to fit the specified position in the
+;                   window. If you prefer, you can force the image to maintain its aspect ratio
 ;                   in the window (although not its natural size) by setting this keyword.
-;                   The image width is fitted first. If, after setting the image width, the image 
-;                   height is too big for the window, then the image height is fitted into the window. 
-;                   The appropriate values of the POSITION keyword are honored during this fitting 
-;                   process. Once a fit is made, the POSITION coordiates are re-calculated to center 
-;                   the image in the window. You can recover these new position coordinates as the 
-;                   output from the POSITION keyword. This keyword is turned ON by default. In other 
+;                   The image width is fitted first. If, after setting the image width, the image
+;                   height is too big for the window, then the image height is fitted into the window.
+;                   The appropriate values of the POSITION keyword are honored during this fitting
+;                   process. Once a fit is made, the POSITION coordiates are re-calculated to center
+;                   the image in the window. You can recover these new position coordinates as the
+;                   output from the POSITION keyword. This keyword is turned ON by default. In other
 ;                   words, to allow free positioning, set KEEP_ASPECT=0. Note that if this keyword is
 ;                   set, and the XSIZE and YSIZE keywords are undefined, that the window will have the
 ;                   same aspect ratio as the image.
-;                   
+;
 ;     MAP_COORD:    A MapCoord object that can be used to georeference the image in the display window.
 ;
 ;     MAP_GRID:     If the file can be georegistered (e.g. a GeoTIFF file), then setting this keyword
@@ -85,7 +85,7 @@
 ;     MAP_OUTLINE:  If the file can be georegistered (e.g. a GeoTIFF file), then setting this keyword
 ;                   will add a continental outline to the MapCoord object. Otherwise, the keyword is
 ;                   ignored. Can only be used when passing ImgWin a GeoTIFF filename.
-;                  
+;
 ;     MEAN:         The mean factor in a logarithmic stretch. Default is 0.5.
 ;
 ;     MISSING_COLOR: The name of the missing color. The default is "gray".
@@ -109,14 +109,14 @@
 ;                    (x1,y1) is the upper-right corner of the image. If the KEEP_ASPECT keyword
 ;                    is set, the image will be located within the specified POSITION in a way
 ;                    that preserves the aspect ratio of the image. The default is [0.075, 0.075, 0.925, 0.925].
-;                    
-;                    
+;
+;
 ;     SCALETYPE:     The type of scaling performed prior to display. Default is 0, linear scaling.
 ;                    May be specified as a number or as a string (e.g, 3 or "ASINH").
 ;
 ;           Number   Type of Stretch
 ;             0         Linear         scaled = BytScl(image, MIN=minThresh, MAX=maxThresh)
-;             1         Gamma          scaled = GmaScl(image, MIN=minThresh, MAX=maxThresh, Gamma=gamma)
+;             1         Gamma          scaled = cgGmaScl(image, MIN=minThresh, MAX=maxThresh, Gamma=gamma)
 ;             2         Log            scaled = LogScl(image, MIN=minThresh, MAX=maxThresh, Mean=mean, Exponent=exponent)
 ;             3         Asinh          scaled = AsinhScl(image, MIN=minThresh, MAX=maxThresh, Beta=beta)
 ;             4         Linear 2%      A linear stretch, with 2 percent of pixels clipped at both the top and bottom
@@ -130,34 +130,34 @@
 ;     SCLMAX:         The image data is scaled between SCLMIN and SCLMAX before display. Default = 255.
 ;
 ;     SIGMA:          The sigma scale factor for Gaussian scaling. Default is 1.0.
-;     
+;
 ;     TLB_TITLE:      The title of the IMGWIN top-level base. Default: "Catalyst Image Window
-;     
+;
 ;     WIN_KEEP_ASPECT: If this keyword is set, the IMGWIN window will maintain the same aspect ratio
 ;                     as the image as it is resized.
-;     
+;
 ;     XRANGE:         If the AXES keyword is set, this keyword is a two-element vector
 ;                     giving the X axis range. By default, [0, size of image in X].
-;                    
+;
 ;     XSIZE:          The X size of the initial image window. If undefined, appoximately 600 pixels.
 ;                     (Acutally size determined by the aspect ratio of the image.)
-;                    
+;
 ;     XTICKFORMAT:    The tick formatting for the X axis, if the AXES keyword is set.
-;                    
+;
 ;     XTILE:          The title of the X axis, if the AXES keyword is set.
 ;
 ;     YRANGE:         If the AXES keyword is set, this keyword is a two-element vector
 ;                     giving the Y axis range. By default, [0, size of image in Y].
-;                    
+;
 ;     YSIZE:          The Y size of the initial image window. If undefined, appoximately 600 pixels.
 ;                     (Acutally size determined by the aspect ratio of the image.)
 ;
 ;     YTICKFORMAT:    The tick formatting for the Y axis, if the AXES keyword is set.
-;                    
+;
 ;     YTILE:          The title of the Y axis, if the AXES keyword is set.
-;     
+;
 ; OUTPUT_KEYWORDS:
-; 
+;
 ;     OUTIMAGE:        The image object that is created inside the program.
 ;
 ; MODIFICATION_HISTORY:
@@ -211,7 +211,7 @@ PRO ImgWin::EventHandler, event
 
       ; Exits the program and destroys the TLB self object.
       'EXIT' : OBJ_DESTROY, self
-      
+
 ;      ; Creates a full-resolution image.
 ;      'FULL_RESOLUTION': BEGIN
 ;            Widget_Control, /HOURGLASS
@@ -220,11 +220,11 @@ PRO ImgWin::EventHandler, event
 ;                /NOINTERP, TLB_TITLE='Catalyst Full-Resolution Window', $
 ;                GROUP_LEADER=self
 ;         END
-;         
+;
 ;      ; Creates a reduced-resolution image.
 ;      'REDUCED_RESOLUTION': BEGIN
 ;            self.theImage -> GetProperty, XSIZE=xsize, YSIZE=ysize, ASPECT=imgAspect
-;            maxSize = 600 
+;            maxSize = 600
 ;            maximageSize = Max([xsize, ysize])
 ;            IF 2*maximageSize LT maxsize THEN maxsize = 350 > 2*maximagesize
 ;            IF imgAspect GE 1 THEN BEGIN
@@ -236,13 +236,13 @@ PRO ImgWin::EventHandler, event
 ;            ENDELSE
 ;            Widget_Control, /HOURGLASS
 ;            imageCopy = self.theImage -> Copy()
-;            
+;
 ;            ImgWin, imageCopy, /KEEP_ASPECT, $
 ;                /NOINTERP, TLB_TITLE='Catalyst Image Window', $
 ;                XSIZE = xwinsize, YSIZE=ywinsize, $
 ;                GROUP_LEADER=self
 ;         END
-                
+
       ; Allows the user to flip the image vertically.
       'FLIP_IMAGE': BEGIN
             self.theDrawWidget -> SetWindow
@@ -256,21 +256,21 @@ PRO ImgWin::EventHandler, event
 
       ; Allows the user to change image colors.
       'IMAGE_COLORS': BEGIN
-      
+
             ; Make sure this is the current graphics widnow.
             self.theDrawWidget -> SetWindow
-            
+
             ; Load the current image colors so that XCOLORS starts
             ; up with the proper colors.
             self.theImage -> GetProperty, COLOR_OBJECT=colors
             colors -> GetProperty, COLORPALETTE=palette, BREWER=brewer, NCOLORS=ncolors
             TVLCT, palette
-            
+
             ; Put the XCOLORS palette next to this window.
             self -> GetProperty, XOFFSET=xoffset, YOFFSET=yoffset, XSIZE=xsize, YSIZE=ysize
             colors -> XColors, XOFFSET=xoffset + xsize + 15, $
                  YOFFSET=yoffset + 100, GROUP_LEADER=self
-                
+
         END
 
       ; Allows the user to set the image properties interactively.
@@ -295,9 +295,9 @@ PRO ImgWin::EventHandler, event
          BEGIN
             imageObject -> GetProperty, N_DIMENSIONS=ndims
             IF ndims EQ 2 THEN BEGIN
-                s = 'Value: ' + StrTrim(value,2) 
+                s = 'Value: ' + StrTrim(value,2)
                 s = s + '    Pixel Loc: (' + StrTrim(xpix,2) + ', ' + StrTrim(ypix,2) + ')' + $
-                '    Data Loc: (' + String(xdata,Format='(F0.2)') + ', ' + String(ydata,Format='(F0.2)') + ')'                
+                '    Data Loc: (' + String(xdata,Format='(F0.2)') + ', ' + String(ydata,Format='(F0.2)') + ')'
             ENDIF ELSE BEGIN
                 s = 'R: ' + StrTrim(value[0],2) + '  G: ' + StrTrim(value[1],2) + '  B: ' + StrTrim(value[2],2)
                 s = s + '    Pixel Loc: (' + StrTrim(xpix,2) + ', ' + StrTrim(ypix,2) + ')' + $
@@ -306,20 +306,20 @@ PRO ImgWin::EventHandler, event
             self._statusbar -> SetProperty, Text=s
          ENDELSE
          END
-                         
+
        ; This is a resize event from the TLB.
        'IMGWIN_TLB': BEGIN
-       
+
             ; Get the size of the image, as you might need it.
             self.theImage -> GetProperty, XSIZE=imgxsize, YSIZE=imgysize
-            
+
             ; Set the size of the draw widget resize.
             IF StrUpCase(!Version.OS_Family) EQ 'WINDOWS' THEN BEGIN
                 s = [event.x - self.xoffset, event.y - self.yoffset]
             ENDIF ELSE BEGIN
                 s = [event.x-self.xoffset+1, event.y]
             ENDELSE
-            
+
             IF self.win_keep_aspect THEN BEGIN
                 aspectRatio = Float(imgysize) / imgxsize
                 IF aspectRatio GT 1 THEN BEGIN
@@ -328,26 +328,26 @@ PRO ImgWin::EventHandler, event
                    s = [ s[0], s[0]*aspectRatio]
                 ENDELSE
             ENDIF
-                
+
             ; Resize the draw widget.
             IF self.full_resolution EQ 0 THEN BEGIN
                 self.theDrawWidget -> Resize, s[0], s[1]
             ENDIF ELSE BEGIN
                self.theDrawWidget -> Resize, s[0], s[1], /VIEWPORT
             ENDELSE
-            
+
             ; Update the size of the statusbar to reflect the size of the draw widget.
             self._statusbar -> Resize, self.theDrawWidget
-            
+
             ; Redraw the image in the newly-resized draw widget.
             self.theDrawWidget -> Draw
-            
+
         END
-        
+
       ; The SAVE AS... buttons come here. Just get the type of file out of the UVALUE of the
       ; button object and tell the draw widget to create a file of this type.
       'SAVE_WINDOW': BEGIN
-     
+
             ; Call the OUTPUT method on the draw widget.
             event.ID -> GetProperty, UVALUE=fileType
             self.theDrawWidget -> SetWindow
@@ -364,7 +364,7 @@ PRO ImgWin::EventHandler, event
             ; OUTPUT method above. But, I've keep this for backward compatibility issues.
             IF StrUpCase(filetype) EQ 'POSTSCRIPT' THEN self.theDrawWidget -> Draw
             END
-            
+
       ; This allows the user to scale the image interactively. XSTRETCH is called, and stretch
       ; events are sent to the XSTRETCH_NOTIFICATION method.
       'SCALE_IMAGE': BEGIN
@@ -398,9 +398,9 @@ PRO ImgWin::EventHandler, event
                MAXTHRESH=sclmax, $
                SIGMA=sigma, $
                NOTIFY_OBJ={object:self, method:'XStretch_Notification'}
-      
+
             END
-            
+
       'SHRINK_TO_FIT': BEGIN
             self.theImage -> GetProperty, LOCATION=location
             xsize = location[2,0] - location[0,0] + 1
@@ -408,7 +408,7 @@ PRO ImgWin::EventHandler, event
             self.theDrawWidget -> Resize, xsize, ysize, /Draw
             self._statusbar -> Resize, self.theDrawWidget
             END
-                  
+
        ELSE  : self._statusbar -> SetProperty, Text= 'Unexpected event in IMGWIN'
 
    ENDCASE
@@ -425,7 +425,7 @@ PRO ImgWin::GUI, menuBar, $
         FULL_RESOLUTION=full_resolution, $
         WIN_KEEP_ASPECT=win_keep_aspect
 
-        
+
 ; The purpose of this method is create all the graphical user interface elements.
 ; Widgets that cause events are named, and the EventHandler method descriminates
 ; based on the NAME field of the event structure.
@@ -436,16 +436,16 @@ PRO ImgWin::GUI, menuBar, $
    axes = Keyword_Set(axes)
    full_resolution = Keyword_Set(full_resolution)
    win_keep_aspect = Keyword_Set(win_keep_aspect)
-   
+
    ; Create a status bar.
    self -> CreateStatusBar
-   
+
    ; Create a Quit button in the menu bar.
    fileMenu = OBJ_NEW ('ButtonWidget', menuBar ,  Value='File', /MENU)
-   
+
    ; Add color change and scaling buttons if image is 2D.
    self.theImage -> GetProperty, N_DIMENSIONS=n_dims, XSIZE=imgXsize, YSIZE=imgYsize
-   
+
    ; If the window aspect ratio is to be maintained, you will have to modify the window
    ; sizes here.
    IF win_keep_aspect THEN BEGIN
@@ -468,7 +468,7 @@ PRO ImgWin::GUI, menuBar, $
    button = OBJ_NEW ('ButtonWidget', saveasID,  Name='SAVE_WINDOW', Value='BMP File', UVALUE='BMP')
    button = OBJ_NEW ('ButtonWidget', saveasID,  Name='SAVE_WINDOW', Value='PNG File', UVALUE='PNG')
    button = OBJ_NEW ('ButtonWidget', saveasID,  Name='SAVE_WINDOW', Value='PostScript File', UVALUE='POSTSCRIPT')
-   
+
 ;   IF full_resolution THEN BEGIN
 ;       button = OBJ_NEW ('ButtonWidget', fileMenu,  Name='REDUCED_RESOLUTION', $
 ;            Value='Open Reduced Resolution Image', /Separator)
@@ -480,14 +480,14 @@ PRO ImgWin::GUI, menuBar, $
 ;       button = OBJ_NEW ('ButtonWidget', fileMenu,  Name='SHRINK_TO_FIT', $
 ;            Value='Shrink Window to Fit Image')
 ;   ENDELSE
-   
+
    properties = OBJ_NEW ('ButtonWidget', fileMenu,  Value='Properties...', /MENU, SEPARATOR=1)
    button = OBJ_NEW ('ButtonWidget', properties,  Name='IMAGE_PROPERTIES', Value='Image Properties')
    IF Keyword_Set(axes) THEN button = OBJ_NEW ('ButtonWidget', properties,  Name='AXES_PROPERTIES', $
         Value='Axes Properties')
- 
+
     exitBttn = OBJ_NEW ('ButtonWidget', fileMenu,  Name='Exit', Value='Exit', /Separator)
-   
+
     IF Keyword_Set(self.full_resolution) THEN BEGIN
         IF StrUpCase(!VERSION.os_family) EQ 'WINDOWS' THEN BEGIN
             drawObj = OBJ_NEW ('SelectableDrawWidget', self, XSIZE=imgXsize, YSize=imgYsize, $
@@ -507,7 +507,7 @@ PRO ImgWin::GUI, menuBar, $
                      /Notify_Realize, MOTION_EVENTS=1)
                  self.full_resolution = 0
             ENDELSE
-         
+
          ENDELSE
     ENDIF ELSE BEGIN
         drawObj = OBJ_NEW ('SelectableDrawWidget', self, XSIZE=xwinsize < imgxsize, YSize=ywinsize < imgysize, $
@@ -516,7 +516,7 @@ PRO ImgWin::GUI, menuBar, $
     ENDELSE
     drawObj -> Add, self.theImage
     self.theDrawWidget = drawObj
-   
+
     ; Display the entire application in the window.
     self -> Draw, /Center
 
@@ -524,11 +524,11 @@ PRO ImgWin::GUI, menuBar, $
     drawObj -> GetProperty, GEOMETRY=drawgeo
     menubar -> GetProperty, GEOMETRY=menugeo
     self._statusBar -> GetProperty, GEOMETRY=statgeo
-    
+
     ; Set up offsets for resizing the window. This is machine
     ; dependent because UNIX machines report their "size" differently
     ; than WINDOWS machines.
-    self.xoffset = tlbgeo.scr_xsize - drawgeo.scr_xsize 
+    self.xoffset = tlbgeo.scr_xsize - drawgeo.scr_xsize
     self.yoffset = tlbgeo.scr_ysize - (drawgeo.scr_ysize  + menugeo.scr_ysize + statgeo.scr_ysize)
 
     ; Make sure the image object *always* draws into this window.
@@ -541,11 +541,11 @@ END
 PRO ImgWin::XStretch_Notification, info
 
 ; When stretch parameters are changed in XSTRETCH, those parameters are bundled up
-; in an info structure, which is passed to this method. Use the info parameters to 
+; in an info structure, which is passed to this method. Use the info parameters to
 ; configure the image.
 
     @cat_pro_error_handler
-    
+
     ; Pass the new XSTRETCH parameters on to the image.
     IF StrUpCase(info.event_handler) EQ 'XSTRETCH_STRETCHTYPE' THEN BEGIN
         self.theImage -> SetProperty, SCALETYPE=info.type, SCLMIN=info.minThresh, SCLMAX=info.maxThresh, $
@@ -553,28 +553,28 @@ PRO ImgWin::XStretch_Notification, info
     ENDIF ELSE BEGIN
         self.theImage -> SetProperty, SCLMIN=info.minThresh, SCLMAX=info.maxThresh
     ENDELSE
-          
+
     ; Redraw the image in the window
     self.theDrawWidget -> SetWindow
     self.theImage -> Draw
-    
+
 END
 ;*****************************************************************************************************
 
 
 PRO ImgWin::CLEANUP
-    
+
     @cat_pro_error_handler
-    
+
     IF Obj_Valid(self.theImage) THEN self.theImage -> RemoveParent, self
     Obj_Destroy, self.theDrawWidget
     Obj_Destroy, self.theAxes
     Obj_Destroy, self._statusbar
-    
+
     self -> TOPLEVELBASE::Cleanup
-    
+
     self -> Report, /Completed
-    
+
 END
 ;*****************************************************************************************************
 
@@ -617,7 +617,7 @@ FUNCTION ImgWin::INIT, image, $
     YTITLE=ytitle, $
     OUTIMAGE=theImage, $   An output keyword.
     _Ref_Extra=extra
-    
+
     ; Catch error handling.
     Catch, theError
     IF theError NE 0 THEN BEGIN
@@ -625,7 +625,7 @@ FUNCTION ImgWin::INIT, image, $
         void = cgErrorMsg()
         RETURN, 0
     ENDIF
-    
+
     ; Must have an image to display. This could be the name of an image file,
     ; or it could be the image itself. Give the user a change to pick an image
     ; file is an image is not specified.
@@ -696,7 +696,7 @@ FUNCTION ImgWin::INIT, image, $
             colorPalette = [[r], [g], [b]]
             scaletype = 'NONE'
        ENDIF
-       
+
        ; Some PNG files (from ImageMagick, for example) are created with 16-bits per channel.
        ; Convert this to 8-bits per channel, and also remove any alpha channel for this application.
        root_name = cgRootName(imageFile, EXTENSION=ext)
@@ -712,14 +712,14 @@ FUNCTION ImgWin::INIT, image, $
             ENDIF
        ENDIF
     ENDIF
-    
+
     ; If you have an image at this point, skip the next section.
     IF N_Elements(theImage) NE 0 THEN Goto, DefineWidgets
-    
+
     ; This can be the name of a file to read, an actual image variable, or an image object.
     imageIsObject = 0
     CASE Size(image, /TNAME) OF
-    
+
         'STRING': BEGIN
            IF image EQ "" THEN Return, 0
            imagefile = image
@@ -798,17 +798,17 @@ FUNCTION ImgWin::INIT, image, $
                 scaletype = 'NONE'
            ENDIF
            END
-           
+
          'OBJREF': BEGIN
                 imageIsObject = 1
                 theImageObj = image
                 END
-         
+
          ELSE: BEGIN
-         
+
             ; Could be an integer from cancelling a file loading application.
             IF N_Elements(image) EQ 1 THEN RETURN, 0
-            
+
             ; If the image is not a 2D array or true-color image, then return.
             ndims = Size(image, /N_DIMENSIONS)
             IF ndims EQ 3 THEN BEGIN
@@ -819,16 +819,16 @@ FUNCTION ImgWin::INIT, image, $
             ENDELSE
             theImage = image
             END
-            
+
     ENDCASE
-    
+
     ; A label to jump to if you have already have an image.
     DefineWidgets:
-    
+
     ; This INIT method simply instantiates a top-level base object with a status bar.
     ok = self->TOPLEVELBASE::INIT(_Extra=extra)
     IF ~ok THEN RETURN, 0
-    
+
     ; No need to go through all this if we have an object.
     IF imageIsObject THEN BEGIN
         ; Add a parent, so this object doesn't die prematurely.
@@ -838,11 +838,11 @@ FUNCTION ImgWin::INIT, image, $
         winxsize = xsize
         winysize = ysize
     ENDIF ELSE BEGIN
-        dims = Image_Dimensions(theImage, XSize=xsize, YSize=ysize, TrueIndex=trueindex, $  
+        dims = Image_Dimensions(theImage, XSize=xsize, YSize=ysize, TrueIndex=trueindex, $
            XIndex=xindex, YIndex=yindex)
         imgAspect = Float(ysize) / xsize
     ENDELSE
-    
+
     ; Check keywords.
     IF N_Elements(background) EQ 0 THEN background = 'ivory'
     brewer = Keyword_Set(brewer)
@@ -873,11 +873,11 @@ FUNCTION ImgWin::INIT, image, $
                   scaletype = index
             ENDIF
         ENDELSE
-    
+
     ; Check ranges.
     IF N_Elements(xrange) EQ 0 THEN xrange = [0, xsize]
     IF N_Elements(yrange) EQ 0 THEN yrange = [0, ysize]
-    
+
         ; Calculate window size.
     IF (N_Elements(xwinsize) EQ 0) AND (N_Elements(ywinsize) EQ 0) THEN BEGIN
         maximageSize = Max([xsize, ysize])
@@ -894,13 +894,13 @@ FUNCTION ImgWin::INIT, image, $
         IF N_Elements(xwinsize) EQ 0 THEN xwinsize = 700
         IF N_Elements(ywinsize) EQ 0 THEN ywinsize = 700
     ENDELSE
-    
+
     ; Can leave now, if an object was passed in.
     IF imageIsObject THEN Goto, imageAsObject
-    
+
     ; If a colorpalette has not been determined already (from READ_IMAGE), then do it here.
     IF (N_Elements(colorpalette) EQ 0) AND Obj_Valid(ctobject) EQ 0 THEN BEGIN
-    
+
         IF N_Elements(ctindex) EQ 0 THEN BEGIN
             ctindex = 0
             TVLCT, rr, gg, bb, /Get
@@ -908,7 +908,7 @@ FUNCTION ImgWin::INIT, image, $
             TVLCT, r, g, b, /GET
             colorPalette = [[r], [g], [b]]
             TVLCT, rr, gg, bb
-        ENDIF ELSE BEGIN  
+        ENDIF ELSE BEGIN
             IF ctindex LT 0 THEN BEGIN
                 TVLCT, r, g, b, /GET
                 colorPalette = [[r], [g], [b]]
@@ -918,10 +918,10 @@ FUNCTION ImgWin::INIT, image, $
                 TVLCT, r, g, b, /GET
                 colorPalette = [[r], [g], [b]]
                 TVLCT, rr, gg, bb
-            ENDELSE   
+            ENDELSE
         ENDELSE
     ENDIF
-    
+
     ; Create a coordinate system for the image if one is not passed in.
     IF N_Elements(map_coord) EQ 0 THEN BEGIN
         coords = Obj_New('CATCOORD', Name='IMG WIN COORDS OBJECT', XRANGE=xrange, YRANGE=yrange)
@@ -929,7 +929,7 @@ FUNCTION ImgWin::INIT, image, $
         coords = map_coord
         coords -> AddParent, self
     ENDELSE
-    
+
     ; If AXES are required.
     IF Keyword_Set(axes) THEN BEGIN
        theAxes = Obj_New('IMGAXES', $
@@ -967,21 +967,21 @@ FUNCTION ImgWin::INIT, image, $
         SCLMAX=sclmax, $
         SELECTABLE=1, $
         SIGMA=sigma)
-        
+
     ; Add the axes, if created.
     IF Obj_Valid(theAxes) THEN theImageObj -> Add, theAxes
-    
+
     ; Come straight here if you pass an object in.
     imageAsObject:
-    
+
     ; Update the colors.
     theImageObj -> GetProperty, COLOR_OBJECT=colors
     colors -> SetProperty, COLORPALETTE=colorPalette, BREWER=Keyword_Set(brewer)
     IF Obj_Valid(ctobject) THEN theImageObj -> SetProperty, COLOR_OBJECT=ctobject
-            
+
     ; Store the image.
     self.theImage = theImageObj
-    
+
     ; Set flags.
     self.full_resolution = Keyword_Set(full_resolution)
     self.imageIsObject = imageIsObject
@@ -1055,9 +1055,9 @@ PRO ImgWin, image, $
     OUTIMAGE=outimage  ; An output keyword
 
    @cat_pro_error_handler
-   
+
    IF N_Elements(tlb_title) EQ 0 THEN tlb_title = 'Catalyst Image Window'
-   
+
    ; Create the widgets that make up the application. Run it.
    tlb = OBJ_NEW('IMGWIN', image, Column=1, NAME='IMGWIN_TLB', $
         SIZE_EVENTS=1, $
@@ -1102,7 +1102,7 @@ PRO ImgWin, image, $
         OUTIMAGE=outimage, $
         _Extra=extra)
 
-   ; Pass information you will need in the GUI method. I only need it once, so I 
+   ; Pass information you will need in the GUI method. I only need it once, so I
    ; am not storing it in the object.
    IF Obj_Valid(tlb) THEN tlb -> GUI, menubar, $
         XWINSIZE=xwinsize, $
@@ -1112,7 +1112,7 @@ PRO ImgWin, image, $
         FULL_RESOLUTION=full_resolution, $
         WIN_KEEP_ASPECT=win_keep_aspect
 
-        
-   
+
+
 END
 ;*****************************************************************************************************
